@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public class Cell : MonoBehaviour
 {
     [SerializeField] private GameObject cellPefab;
+    [SerializeField] private Color lifeColor, deathColor;
     
     private Cell[] neighbors = new Cell[8];
     private int x, y;
@@ -22,23 +23,13 @@ public class Cell : MonoBehaviour
         }
     }
 
-    private Color lifeColor, deathColor;
-
-    private void Start()
-    {
-        nextState = false;
-        ApplyState();
-        lifeColor = Color.white;
-        deathColor = Color.gray3;
-        gameObject.GetComponent<SpriteRenderer>().color = deathColor;
-    }
-
     public Cell CreateCell(int x, int y, float multiplier, GameObject parent)
     {
         Vector3 position = new Vector3(x * multiplier, y * multiplier, 0);
         Cell newCell = Instantiate(cellPefab, position, Quaternion.identity, parent.transform).GetComponent<Cell>();
         newCell.x = x;
         newCell.y = y;
+        gameObject.GetComponent<SpriteRenderer>().color = deathColor;
         return newCell;
     }
 
