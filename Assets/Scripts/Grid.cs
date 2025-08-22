@@ -1,8 +1,4 @@
-using System;
-using DefaultNamespace;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Grid : MonoBehaviour
 {
