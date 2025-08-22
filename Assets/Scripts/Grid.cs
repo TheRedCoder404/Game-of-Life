@@ -6,13 +6,13 @@ using UnityEngine.UI;
 public class Grid : MonoBehaviour
 {
     [SerializeField] private Cell cellPrefab;
-    [SerializeField] private float multiplier = 1.0f;
+    [SerializeField] private float distanceMultiplier = 1.0f;
 
     private bool gridDone, simRunning, updating;
     private Cell[,] grid;
 
     private float timer; 
-    public float speed;
+    public float timeToWait;
     
     private void Start()
     {
@@ -32,7 +32,7 @@ public class Grid : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                grid[y, x] = cellPrefab.CreateCell(x, y,multiplier, gameObject);
+                grid[y, x] = cellPrefab.CreateCell(x, y,distanceMultiplier, gameObject);
             }
         }
         
@@ -71,7 +71,7 @@ public class Grid : MonoBehaviour
     {
         if (gridDone && simRunning && !updating)
         {
-            if (timer >= speed)
+            if (timer >= timeToWait)
             {
                 timer = 0;
                 UpdateCells();

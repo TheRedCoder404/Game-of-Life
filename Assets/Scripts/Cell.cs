@@ -23,13 +23,17 @@ public class Cell : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ApplyState();
+    }
+
     public Cell CreateCell(int x, int y, float multiplier, GameObject parent)
     {
         Vector3 position = new Vector3(x * multiplier, y * multiplier, 0);
         Cell newCell = Instantiate(cellPefab, position, Quaternion.identity, parent.transform).GetComponent<Cell>();
         newCell.x = x;
         newCell.y = y;
-        gameObject.GetComponent<SpriteRenderer>().color = deathColor;
         return newCell;
     }
 
@@ -79,9 +83,7 @@ public class Cell : MonoBehaviour
 
     public void RandomizeLive(float randomness)
     {
-        float random = Random.Range(0f, 1f);
-        bool newValue = random <= randomness;
-        live = newValue;
+        nextState = Random.Range(0f, 1f) <= randomness;
     }
 
     private void OnMouseDown()

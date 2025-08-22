@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AnimationCurve curve;
     
     private bool _simRunning;
-    private bool simRunning
+    private bool  simRunning
     {
         get => _simRunning;
         set
@@ -22,29 +22,29 @@ public class GameManager : MonoBehaviour
             if (value)
             {
                 grid.StartSim();
-                buttonText.text = stopSimText;
+                buttonText.text = StopSimText;
             }
             else
             {
                 grid.StopSim();
-                buttonText.text = startSimText;
+                buttonText.text = StartSimText;
             }
             _simRunning = value;
         }
     }
 
-    private string startSimText = "Start Simulation", stopSimText = "Stop Simulation";
+    private const string StartSimText = "Start Simulation", StopSimText = "Stop Simulation";
     
     private void Start()
     {
         simRunning = false;
-        grid.speed = speed - (curve.Evaluate(slider.value) * speed);
-        buttonText.text = startSimText;
+        grid.timeToWait = speed - (curve.Evaluate(slider.value) * speed);
+        buttonText.text = StartSimText;
     }
 
     public void OnSliderValueChanged(float value)
     {
-        grid.speed = speed - (curve.Evaluate(value) * speed);
+        grid.timeToWait = speed - (curve.Evaluate(value) * speed);
     }
 
     public void OnStartStopButton()
