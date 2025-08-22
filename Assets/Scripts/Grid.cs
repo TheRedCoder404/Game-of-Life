@@ -1,5 +1,6 @@
 using System;
 using DefaultNamespace;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class Grid : MonoBehaviour
 
     private bool gridDone, simRunning, updating;
     private Cell[,] grid;
+    private Cell[,] copiedGrid;
 
     private float timer; 
     public float timeToWait;
@@ -22,7 +24,7 @@ public class Grid : MonoBehaviour
         timer = 0;
     }
 
-    public void CreateGrid(int width, int height, bool randomPattern, float randomness)
+    public void CreateGrid(int width, int height, bool randomPattern, float randomness, bool wrapAround)
     {
         gridDone  = false;
         if (grid != null) DeleteGrid();
@@ -37,10 +39,11 @@ public class Grid : MonoBehaviour
         }
         
         if (randomPattern) RandomizeGrid(randomness);
-        AssignNeighbors();
+        AssignNeighbors(wrapAround, height, width);
         gridDone = true;
     }
-    
+
+
     private void DeleteGrid()
     {
         foreach (Cell cell in grid)
@@ -52,21 +55,19 @@ public class Grid : MonoBehaviour
     public void RandomizeGrid(float randomness)
     {
         updating = true;
-        foreach (Cell cell in grid)
-        {
-            cell.RandomizeLive(randomness);
-        }
+        foreach (Cell cell in grid) cell.RandomizeLive(randomness);
+        foreach (Cell cell in grid) cell.ApplyState();
         updating = false;
     }
 
-    private void AssignNeighbors()
+    private void AssignNeighbors(bool wrapAround, int height, int width)
     {
         foreach (Cell cell in grid)
         {
-            cell.AssignNeighbors(grid);
+            cell.AssignNeighbors(grid, wrapAround, height, width);
         }
     }
-
+    
     private void Update()
     {
         if (gridDone && simRunning && !updating)
@@ -93,11 +94,18 @@ public class Grid : MonoBehaviour
         simRunning = false;
     }
 
-    private void UpdateCells()
+    public void UpdateCells()
     {
         updating = true;
         foreach (Cell cell in grid) cell.UpdateState();
         foreach (Cell cell in grid) cell.ApplyState();
         updating = false;
+    }
+
+    public void ResetGrid()
+    {
+        gridDone = false;
+        foreach (Cell cell in grid) cell.Reset();
+        gridDone = true;
     }
 }

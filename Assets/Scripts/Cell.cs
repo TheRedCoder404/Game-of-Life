@@ -3,6 +3,7 @@ using DefaultNamespace;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
 public class Cell : MonoBehaviour
 {
     [SerializeField] private GameObject cellPefab;
@@ -11,7 +12,7 @@ public class Cell : MonoBehaviour
     private Cell[] neighbors = new Cell[8];
     private int x, y;
 
-    private bool _live, nextState;
+    private bool _live, nextState, initialState;
 
     private bool live
     {
@@ -42,17 +43,34 @@ public class Cell : MonoBehaviour
         neighbors[direction] = neighbor;
     }
 
-    public void AssignNeighbors(Cell[,] grid)
+    public void AssignNeighbors(Cell[,] grid, bool wrapAround, int height, int width)
     {
         for (int i = 0; i < NeighborDirectionExtensions.IndexValues.Length; i++)
         {
-            try
+
+            if (!wrapAround)
             {
-                SetNeighbor(grid[y + NeighborDirectionExtensions.IndexValues[i].Y, x + NeighborDirectionExtensions.IndexValues[i].X], i);
+                int nx = x + NeighborDirectionExtensions.IndexValues[i].X;
+                int ny = y + NeighborDirectionExtensions.IndexValues[i].Y;
+                
+                if (nx >= 0 && nx < width && ny >= 0 && y < height)
+                {
+                    try
+                    {
+                        neighbors[i] = grid[ny, nx];
+                    }
+                    catch (Exception)
+                    {
+                        // do nothing
+                    }
+                }
             }
-            catch (IndexOutOfRangeException)
+            else
             {
-                // do nothing
+                int nx = (x + NeighborDirectionExtensions.IndexValues[i].X + width) % width;
+                int ny = (y + NeighborDirectionExtensions.IndexValues[i].Y + height) % height;
+
+                neighbors[i] = grid[ny, nx];
             }
         }
     }
@@ -84,10 +102,16 @@ public class Cell : MonoBehaviour
     public void RandomizeLive(float randomness)
     {
         nextState = Random.Range(0f, 1f) <= randomness;
+        initialState = nextState;
     }
 
     private void OnMouseDown()
     {
         live = !live;
+    }
+
+    public void Reset()
+    {
+        live = initialState;
     }
 }

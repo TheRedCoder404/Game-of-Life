@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Grid grid;
     [SerializeField] private TMP_Text buttonText;
     [SerializeField] private Slider slider, randomnessSlider;
-    [SerializeField] private Toggle randomizeToggle;
+    [SerializeField] private Toggle randomizeToggle, wrapAroundToggle;
     [SerializeField] private TMP_InputField inputFieldX, inputFieldY;
     [SerializeField] private float speed;
     [SerializeField] private AnimationCurve curve;
@@ -52,10 +52,20 @@ public class GameManager : MonoBehaviour
         simRunning = !simRunning;
     }
 
+    public void OneOneStepButton()
+    {
+        grid.UpdateCells();
+    }
+
+    public void OnResetButton()
+    {
+        grid.ResetGrid();
+    }
+
     public void OnGenNewSimButton()
     {
         if (inputFieldX.text == "" || inputFieldY.text == "") return;
-        grid.CreateGrid(int.Parse(inputFieldX.text), int.Parse(inputFieldY.text), randomizeToggle.isOn, randomnessSlider.value);
+        grid.CreateGrid(int.Parse(inputFieldX.text), int.Parse(inputFieldY.text), randomizeToggle.isOn, randomnessSlider.value, wrapAroundToggle.isOn);
     }
 
     public void OnRandomizeButton()
