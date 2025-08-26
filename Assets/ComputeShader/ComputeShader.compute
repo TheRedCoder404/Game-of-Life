@@ -1,0 +1,18 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+uint2 Resolution;
+float2 drawUV;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= Resolution.x || id.y >= Resolution.y) return;
+    int2 drawPos = (1 - drawUV.xy) * Resolution;
+    int2 offset = id.xy - drawPos;
+
+    if (length(offset) < 2) Result[id.xy] = float4(1, 0, 0, 1);
+}
